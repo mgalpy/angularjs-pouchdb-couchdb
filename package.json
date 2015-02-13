@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/swirlycheetah/angularjs-pouchdb-couchdb/issues"
   },
-  "homepage": "https://github.com/swirlycheetah/angularjs-pouchdb-couchdb"
+  "homepage": "https://github.com/swirlycheetah/angularjs-pouchdb-couchdb",
+  "dependencies": {
+    "pouchdb": "^3.3.0"
+  }
 }
