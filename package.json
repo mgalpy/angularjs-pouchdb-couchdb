@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/swirlycheetah/angularjs-pouchdb-couchdb",
   "dependencies": {
+    "angular": "^1.3.13",
     "pouchdb": "^3.3.0"
   }
 }
