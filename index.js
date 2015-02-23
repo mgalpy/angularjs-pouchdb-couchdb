@@ -10,15 +10,15 @@
     var db = new PouchDB(COUCH.host + COUCH.database);
 
     function get(user) {
-      db.get(user).then(function(doc) {
+      return db.get(user._id).then(function(doc) {
         return doc;
       });
     }
 
     function put(data) {
-      db.get(data._id).then(function(doc) {
+      get(data._id).then(function(doc) {
         doc.options = data.options;
-        return db.put(doc);
+        return db.put(doc);        
       }, function(doc) {
         return db.put(data);
       });
@@ -46,7 +46,7 @@
       { id: 2,
         name: 'Scala',
         selected: false },
-    ]};
+    ]};    
 
     // @todo - feel like there's a cleaner way
     // to push things without user confirmation
@@ -55,6 +55,10 @@
       return vm.user;
     }, function(newVal, oldVal) {
       if (newVal !== oldVal) {
+        userSettings.get(vm.user).then(function(foo) {
+          vm.user = foo;
+          $scope.$apply();
+        });        
         userSettings.put(vm.user);
       }
     }, true);
