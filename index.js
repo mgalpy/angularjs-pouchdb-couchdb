@@ -3,7 +3,7 @@
   'use strict';
 
   userSettings.$inject = ['COUCH'];
-  pouchCtrl.$inject = ['userSettings', '$scope'];
+  pouchCtrl.$inject = ['$scope', 'userSettings'];
 
   function userSettings(COUCH) {
 
@@ -16,21 +16,23 @@
     }
 
     function put(data) {
-      get(data._id).then(function(doc) {
-        doc.options = data.options;
-        return db.put(doc);        
-      }, function(doc) {
-        return db.put(data);
+      db.get(data._id).then(function (doc) {
+        doc = data;
+        return db.put(doc);
+      }).then(function () {
+        return db.get(data._id);
+      }).then(function (doc) {
+        console.log(doc);
       });
     }
 
     return {
       get: get,
       put: put
-    }
+    };
   }
 
-  function pouchCtrl(userSettings, $scope) {
+  function pouchCtrl($scope, userSettings) {
 
     var vm = this;
 
@@ -55,15 +57,14 @@
       return vm.user;
     }, function(newVal, oldVal) {
       if (newVal !== oldVal) {
-        userSettings.get(vm.user).then(function(foo) {
-          vm.user = foo;
+        userSettings.get(vm.user).then(function(update) {
+          vm.user = update;
           $scope.$apply();
-        });        
-        userSettings.put(vm.user);
+        });
       }
     }, true);
 
-  };
+  }
 
   angular.module('pouchDemo', [])
     .constant('COUCH', {
