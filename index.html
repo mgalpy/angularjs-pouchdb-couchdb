@@ -10,8 +10,10 @@
   <input ng-model="pouch.user._id" ng-model-options="{updateOn: 'blur'}" placeholder="Username" />
 
   <label ng-repeat="option in pouch.user.options">
-      <input type="checkbox" ng-model="pouch.user.options[option.id].selected" />{{option.name}}
+      <input type="checkbox" ng-model="option.selected" />{{option.name}}
   </label>
+
+  {{pouch.err}}
 
   <script src="node_modules/angular/angular.js"></script>
   <script src="node_modules/pouchdb/dist/pouchdb.js"></script>
