@@ -3,7 +3,7 @@
   'use strict';
 
   userSettings.$inject = ['COUCH'];
-  pouchCtrl.$inject = ['$scope', 'userSettings'];
+  pouchCtrl.$inject = ['$scope', 'userSettings', 'SELECTIONS'];
 
   function userSettings(COUCH) {
 
@@ -16,13 +16,12 @@
     }
 
     function put(data) {
-      db.get(data._id).then(function (doc) {
-        doc = data;
-        return db.put(doc);
-      }).then(function () {
+      return db.get(data._id).then(function(data) {
+        return db.put(data);
+      }).then(function() {
         return db.get(data._id);
-      }).then(function (doc) {
-        console.log(doc);
+      }).then(function(data) {
+        console.log(data);
       });
     }
 
@@ -32,32 +31,28 @@
     };
   }
 
-  function pouchCtrl($scope, userSettings) {
+  function pouchCtrl($scope, userSettings, SELECTIONS) {
 
     var vm = this;
 
+    function resetSelected(selections) {
+      return selections.map(function(selection) {
+        selection.selected = false;
+      });
+    }
+
+    resetSelected(SELECTIONS);
+
     vm.user = {
       _id: null,
-      options: [
-      { id: 0,
-        name: 'JavaScript',
-        selected: false },
-      { id: 1,
-        name: 'Python',
-        selected: false },
-      { id: 2,
-        name: 'Scala',
-        selected: false },
-    ]};    
+      options: SELECTIONS
+    }
 
-    // @todo - feel like there's a cleaner way
-    // to push things without user confirmation
-    // deep watch not performant
     $scope.$watch(function() {
       return vm.user;
     }, function(newVal, oldVal) {
       if (newVal !== oldVal) {
-        userSettings.get(vm.user).then(function(update) {
+        userSettings.put(newVal).then(function(update) {
           vm.user = update;
           $scope.$apply();
         });
@@ -71,6 +66,17 @@
       host: 'https://swirlycheetah.iriscouch.com/',
       database: 'user_settings'
     })
+    .value('SELECTIONS', [
+      { id: 0,
+        name: 'JavaScript'
+      },
+      { id: 1,
+        name: 'Python'
+      },
+      { id: 2,
+        name: 'Scala'
+      }
+    ])
     .factory('userSettings', userSettings)
     .controller('pouchCtrl', pouchCtrl);
 

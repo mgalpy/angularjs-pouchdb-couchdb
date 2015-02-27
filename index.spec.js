@@ -1,5 +1,5 @@
 describe('pouchDemo', function() {
-  
+
   beforeEach(module('pouchDemo'));
 
   beforeEach(inject(function($injector) {
@@ -7,7 +7,7 @@ describe('pouchDemo', function() {
     suite.controller = $injector.get('$controller');
     suite.$scope = $injector.get('$rootScope').$new();
     suite.userSettingsMock = {};
-    
+
     suite.createCtrl = function() {
       suite.ctrl = suite.controller('pouchCtrl', {
         $scope: suite.$scope,
@@ -15,15 +15,15 @@ describe('pouchDemo', function() {
       });
     };
     suite.createCtrl();
-    
+
   }));
-  
+
   describe('on initialisation', function() {
-    
-    it('should set scope values', function() {
-      expect(this.ctrl).toBeDefined();
+
+    it('should set the expected scope values', function() {
+      expect(this.ctrl.user).toBeDefined();
     });
-    
+
   });
-  
+
 });
