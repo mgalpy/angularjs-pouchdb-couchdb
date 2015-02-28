@@ -43,12 +43,20 @@
       options: SELECTIONS
     };
 
+    function resetSelected(selections) {
+      return selections.map(function (selection) {
+        selection.selected = false;
+        return selection;
+      });
+    }
+
+
     vm.reset = function () {
       $window.localStorage.removeItem('user');
       vm.user = {
-        id: '',
-        options: SELECTIONS
-      };
+        _id: '',
+        options: resetSelected(vm.user.options)
+      }
     };
 
     function trackOptions() {
