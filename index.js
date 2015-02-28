@@ -42,41 +42,42 @@
     var vm = this;
 
     vm.user = {
-      _id: $window.localStorage.getItem('user') || null,
+      _id: $window.localStorage.getItem('user') || '',
       options: SELECTIONS
+    }
+
+    vm.reset = function() {
+      vm.user = {
+        id: '',
+        options: SELECTIONS
+      }
     }
 
     $scope.$watch(function() {
       return vm.user._id;
     }, function(newVal, oldVal) {
-      $window.localStorage.setItem('user', newVal);
-      userSettings.get(newVal, vm.user).then(function(store) {
-        vm.user = store;
-        trackOptions();
-        $scope.$apply();
-      });
+      if (newVal) {
+        console.log('blah');
+        $window.localStorage.setItem('user', newVal);
+        userSettings.get(newVal, vm.user).then(function(store) {
+          vm.user = store;
+          trackOptions();
+          $scope.$apply();
+        });
+      }
     });
 
     function trackOptions() {
       $scope.$watch(function() {
         return vm.user.options;
       }, function(newVal, oldVal) {
-        if (newVal !== oldVal) {
+        if (newVal !== oldVal && vm.user._id) {
           userSettings.put(vm.user._id, newVal).then(function() {
             console.log('user preferences sent:', newVal);
           });
         }
       }, true);
     }
-
-
-    function resetSelected(selections) {
-      return selections.map(function(selection) {
-        selection.selected = false;
-      });
-    }
-
-    resetSelected(SELECTIONS);
 
   }
 
@@ -85,17 +86,16 @@
       host: 'https://swirlycheetah.iriscouch.com/',
       database: 'user_settings'
     })
-    .value('SELECTIONS', [
-      { id: 0,
-        name: 'JavaScript'
-      },
-      { id: 1,
-        name: 'Python'
-      },
-      { id: 2,
-        name: 'Scala'
-      }
-    ])
+    .value('SELECTIONS', [{
+      id: 0,
+      name: 'JavaScript'
+    }, {
+      id: 1,
+      name: 'Python'
+    }, {
+      id: 2,
+      name: 'Scala'
+    }])
     .factory('userSettings', userSettings)
     .controller('pouchCtrl', pouchCtrl);
 
