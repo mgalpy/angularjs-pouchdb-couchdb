@@ -44,6 +44,7 @@
     };
 
     vm.reset = function () {
+      $window.localStorage.removeItem('user');
       vm.user = {
         id: '',
         options: SELECTIONS
@@ -66,7 +67,6 @@
       return vm.user._id;
     }, function (newVal) {
       if (newVal) {
-        console.log('blah');
         $window.localStorage.setItem('user', newVal);
         userSettings.get(newVal, vm.user).then(function (store) {
           vm.user = store;
