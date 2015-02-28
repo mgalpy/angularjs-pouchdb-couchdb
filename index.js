@@ -3,7 +3,7 @@
   'use strict';
 
   userSettings.$inject = ['COUCH'];
-  pouchCtrl.$inject = ['$scope', 'userSettings', 'SELECTIONS'];
+  pouchCtrl.$inject = ['$scope', '$window', 'userSettings', 'SELECTIONS'];
 
   function userSettings(COUCH) {
 
@@ -37,25 +37,24 @@
     };
   }
 
-  function pouchCtrl($scope, userSettings, SELECTIONS) {
+  function pouchCtrl($scope, $window, userSettings, SELECTIONS) {
 
     var vm = this;
 
     vm.user = {
-      _id: null,
+      _id: $window.localStorage.getItem('user') || null,
       options: SELECTIONS
-    }    
-    
+    }
+
     $scope.$watch(function() {
       return vm.user._id;
     }, function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        userSettings.get(newVal, vm.user).then(function(store) {
-          vm.user = store;
-          trackOptions();
-          $scope.$apply();          
-        });
-      }
+      $window.localStorage.setItem('user', newVal);
+      userSettings.get(newVal, vm.user).then(function(store) {
+        vm.user = store;
+        trackOptions();
+        $scope.$apply();                 
+      });
     });
 
     function trackOptions() {
@@ -69,6 +68,7 @@
         }
       }, true);
     }
+
 
     function resetSelected(selections) {
       return selections.map(function(selection) {
