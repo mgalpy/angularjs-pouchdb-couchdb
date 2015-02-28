@@ -9,19 +9,25 @@
 
     var db = new PouchDB(COUCH.host + COUCH.database);
 
-    function get(user) {
-      return db.get(user._id).then(function(doc) {
+    function get(user, data) {
+      return db.get(user).then(function(doc) {
+        console.log('user preferences retrieved:', doc);
         return doc;
+      }, function(err) {
+        console.log('new user added:', user);
+        db.put(data);
+        return data;
       });
     }
 
-    function put(data) {
-      return db.get(data._id).then(function(data) {
-        return db.put(data);
+    function put(user, data) {
+      return db.get(user).then(function(doc) {
+        doc.options = data;
+        return db.put(doc);
       }).then(function() {
-        return db.get(data._id);
-      }).then(function(data) {
-        console.log(data);
+        return db.get(user);
+      }).then(function(doc) {
+        console.log('user preferences updated:', doc);
       });
     }
 
@@ -35,6 +41,35 @@
 
     var vm = this;
 
+    vm.user = {
+      _id: null,
+      options: SELECTIONS
+    }    
+    
+    $scope.$watch(function() {
+      return vm.user._id;
+    }, function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        userSettings.get(newVal, vm.user).then(function(store) {
+          vm.user = store;
+          trackOptions();
+          $scope.$apply();          
+        });
+      }
+    });
+
+    function trackOptions() {
+      $scope.$watch(function() {
+        return vm.user.options;
+      }, function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+          userSettings.put(vm.user._id, newVal).then(function() {
+            console.log('user preferences sent:', newVal);
+          });
+        }
+      }, true);
+    }
+
     function resetSelected(selections) {
       return selections.map(function(selection) {
         selection.selected = false;
@@ -42,22 +77,6 @@
     }
 
     resetSelected(SELECTIONS);
-
-    vm.user = {
-      _id: null,
-      options: SELECTIONS
-    }
-
-    $scope.$watch(function() {
-      return vm.user;
-    }, function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        userSettings.put(newVal).then(function(update) {
-          vm.user = update;
-          $scope.$apply();
-        });
-      }
-    }, true);
 
   }
 
