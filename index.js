@@ -53,7 +53,7 @@
       userSettings.get(newVal, vm.user).then(function(store) {
         vm.user = store;
         trackOptions();
-        $scope.$apply();                 
+        $scope.$apply();
       });
     });
 
