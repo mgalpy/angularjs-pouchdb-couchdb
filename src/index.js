@@ -1,6 +1,6 @@
 function userSettings(COUCH, $window) {
 
-  var db = new $window.PouchDB(COUCH.host + COUCH.database);
+  const db = new $window.PouchDB(COUCH.host + COUCH.database);
 
   function get(user, data) {
     return db.get(user).then((doc) => {
@@ -25,14 +25,14 @@ function userSettings(COUCH, $window) {
   }
 
   return {
-    get: get,
-    put: put
+    get,
+    put
   };
 }
 
 function pouchCtrl($scope, $window, userSettings, SELECTIONS) {
 
-  var vm = this;
+  let vm = this;
 
   vm.user = {
     _id: $window.localStorage.getItem('user') || '',
