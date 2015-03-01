@@ -88,7 +88,7 @@ pouchCtrl.$inject = ['$scope', '$window', 'userSettings', 'SELECTIONS'];
 angular.module('pouchDemo', [])
   .constant('COUCH', {
     host: 'https://swirlycheetah.iriscouch.com/',
-    database: 'user_settings'
+    database: 'user_preferences'
   })
   .value('SELECTIONS', [{
     id: 0,
