@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "karma run",
-    "build": "cp src/index.html build/index.html && npm run compile",
+    "build": "sed -e 's,/src/,/build/,g' src/index.html > build/index.html && npm run compile",
     "compile": "babel src/index.js -o build/index.js -s",
     "watch": "babel src/index.js -o build/index.js -w -s"
   },
