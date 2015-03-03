@@ -10,7 +10,7 @@
   <input ng-model="pouch.user._id" ng-model-options="{updateOn: 'blur'}" placeholder="Username" />
 
   <label ng-repeat="option in pouch.user.options">
-      <input type="checkbox" ng-model="option.selected" />{{option.name}}
+      <input type="checkbox" ng-model="option.selected" ng-change="pouch.pushChange(option)" />{{option.name}}
   </label>
 
   <button ng-click="pouch.reset()">Reset</button>

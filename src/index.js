@@ -46,7 +46,6 @@ function pouchCtrl($scope, $window, userSettings, SELECTIONS) {
     });
   }
 
-
   vm.reset = () => {
     $window.localStorage.removeItem('user');
     vm.user = {
@@ -55,16 +54,11 @@ function pouchCtrl($scope, $window, userSettings, SELECTIONS) {
     };
   };
 
-  function trackOptions() {
-    $scope.$watch(() => {
-      return vm.user.options;
-    }, (newVal, oldVal) => {
-      if (newVal !== oldVal && vm.user._id) {
-        userSettings.put(vm.user._id, newVal).then(() => {
-          console.log('user preferences sent:', newVal);
-        });
-      }
-    }, true);
+  vm.pushChange = (pushedValue) => {
+    vm.user.options[pushedValue.id] = pushedValue;
+    userSettings.put(vm.user._id, vm.user.options).then(() => {
+      console.log('user preferences sent:', vm.user.options);
+    });
   }
 
   $scope.$watch(() => {
@@ -74,7 +68,6 @@ function pouchCtrl($scope, $window, userSettings, SELECTIONS) {
       $window.localStorage.setItem('user', newVal);
       userSettings.get(newVal, vm.user).then((store) => {
         vm.user = store;
-        trackOptions();
         $scope.$apply();
       });
     }
