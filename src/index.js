@@ -59,7 +59,7 @@ function pouchCtrl($scope, $window, userSettings, SELECTIONS) {
     userSettings.put(vm.user._id, vm.user.options).then(() => {
       console.log('user preferences sent:', vm.user.options);
     });
-  }
+  };
 
   $scope.$watch(() => {
     return vm.user._id;
